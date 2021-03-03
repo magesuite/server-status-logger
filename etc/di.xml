@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="server_status" xsi:type="object">MageSuite\ServerStatusLogger\Console\Command\ServerStatus</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="MageSuite\ServerStatusLogger\Model\StatusResolversPool">
+        <arguments>
+            <argument name="resolvers" xsi:type="array">
+                <item name="database_processlist" xsi:type="object">MageSuite\ServerStatusLogger\Model\StatusResolver\DatabaseProcesslist</item>
+                <item name="procesess" xsi:type="object">MageSuite\ServerStatusLogger\Model\StatusResolver\Procesess</item>
+                <item name="mview_state" xsi:type="object">MageSuite\ServerStatusLogger\Model\StatusResolver\MviewState</item>
+                <item name="indexer_state" xsi:type="object">MageSuite\ServerStatusLogger\Model\StatusResolver\IndexerState</item>
+                <item name="cron_jobs" xsi:type="object">MageSuite\ServerStatusLogger\Model\StatusResolver\CronJobs</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="MageSuite\ServerStatusLogger\Model\StatusResolver\Procesess">
+        <arguments>
+            <argument name="ignoredProcesessPatterns" xsi:type="array">
+                <item name="[*]" xsi:type="string">\[*\]</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

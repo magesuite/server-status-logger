@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <system>
+            <server_status_logger>
+                <cron_schedule>* 0-6 * * *</cron_schedule>
+                <logging_retention_period>7</logging_retention_period>
+            </server_status_logger>
+        </system>
+    </default>
+</config>
