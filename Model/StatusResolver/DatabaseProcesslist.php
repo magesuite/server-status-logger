@@ -35,7 +35,7 @@ class DatabaseProcesslist implements \MageSuite\ServerStatusLogger\Model\StatusR
         $queries = $connection->fetchAll("SHOW FULL PROCESSLIST");
 
         foreach($queries as &$query) {
-            $query['Info'] = substr($query['Info'], 0, $this->maximumQueryLength);
+            $query['Info'] = substr((string)$query['Info'], 0, $this->maximumQueryLength);
         }
 
         return $queries;
