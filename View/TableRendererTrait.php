@@ -10,7 +10,7 @@ trait TableRendererTrait
 
         $table = new \Symfony\Component\Console\Helper\Table($output);
 
-        $table->setHeaders(array_keys($tableData[0]));
+        $table->setHeaders(array_keys($tableData[0] ?? []));
         $table->setRows($tableData);
 
         $table->render();
