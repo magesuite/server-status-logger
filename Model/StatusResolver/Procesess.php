@@ -55,6 +55,11 @@ class Procesess implements \MageSuite\ServerStatusLogger\Model\StatusResolverInt
                 $row[$header[$i]] = $process[$i];
             }
 
+            if(!isset($row['CMD'])) {
+                unset($processes[$index]);
+                continue;
+            }
+
             if(!$this->shouldBeLogged($row['CMD'])) {
                 unset($processes[$index]);
                 continue;
