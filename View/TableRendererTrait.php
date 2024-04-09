@@ -5,6 +5,10 @@ namespace MageSuite\ServerStatusLogger\View;
 trait TableRendererTrait
 {
     public function renderTable($sectionName, $tableData, $output) {
+        if (empty($tableData)) {
+            return;
+        }
+
         $helper = new \Symfony\Component\Console\Style\SymfonyStyle(new \Symfony\Component\Console\Input\ArrayInput([]), $output);
         $helper->section($sectionName);
 
