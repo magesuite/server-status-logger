@@ -6,27 +6,14 @@ class Procesess implements \MageSuite\ServerStatusLogger\Model\StatusResolverInt
 {
     use \MageSuite\ServerStatusLogger\View\TableRendererTrait;
 
-    const COLUMNS_COUNT = 4;
-    const PROCESSLIST_SHELL_COMMAND = 'ps axww -o %p, -o %t, -o %C, -o cmd';
-
-    /**
-     * @var \Magento\Framework\Shell\Driver
-     */
-    protected $shell;
-
-    /**
-     * @var array
-     */
-    protected $ignoredProcesessPatterns;
+    public const COLUMNS_COUNT = 4;
+    public const PROCESSLIST_SHELL_COMMAND = 'ps axww -o %p, -o %t, -o %C, -o cmd';
+    public const FNMATCH_MAX_FILENAME_LENGTH = 4096;
 
     public function __construct(
-        \Magento\Framework\Shell\Driver $shell,
-        $ignoredProcesessPatterns = []
-    )
-    {
-        $this->shell = $shell;
-        $this->ignoredProcesessPatterns = $ignoredProcesessPatterns;
-    }
+        protected \Magento\Framework\Shell\Driver $shell,
+        protected array $ignoredProcesessPatterns = []
+    ) {}
 
     /**
      * @inheritDoc
@@ -39,8 +26,8 @@ class Procesess implements \MageSuite\ServerStatusLogger\Model\StatusResolverInt
         $header = [];
         $result = [];
 
-        foreach($processes as $index => $process) {
-            if(empty($header)) {
+        foreach ($processes as $index => $process) {
+            if (empty($header)) {
                 $header = explode(',', $process, self::COLUMNS_COUNT);
                 $header = array_map('trim', $header);
                 continue;
@@ -51,16 +38,16 @@ class Procesess implements \MageSuite\ServerStatusLogger\Model\StatusResolverInt
 
             $row = [];
 
-            for($i =0; $i < count($header); $i++) {
-                $row[$header[$i]] = $process[$i];
+            foreach ($header as $columnIndex => $columnName) {
+                $row[$columnName] = $process[$columnIndex] ?? null;
             }
 
-            if(!isset($row['CMD'])) {
+            if (!isset($row['CMD'])) {
                 unset($processes[$index]);
                 continue;
             }
 
-            if(!$this->shouldBeLogged($row['CMD'])) {
+            if (!$this->shouldBeLogged($row['CMD'])) {
                 unset($processes[$index]);
                 continue;
             }
@@ -71,10 +58,14 @@ class Procesess implements \MageSuite\ServerStatusLogger\Model\StatusResolverInt
         return $result;
     }
 
-    protected function shouldBeLogged($process)
+    protected function shouldBeLogged(string $process): bool
     {
-        foreach($this->ignoredProcesessPatterns as $pattern) {
-            if(fnmatch($pattern, $process)) {
+        if (strlen($process) > self::FNMATCH_MAX_FILENAME_LENGTH) {
+            return true;
+        }
+
+        foreach ($this->ignoredProcesessPatterns as $pattern) {
+            if (fnmatch($pattern, $process)) {
                 return false;
             }
         }
@@ -85,7 +76,7 @@ class Procesess implements \MageSuite\ServerStatusLogger\Model\StatusResolverInt
     /**
      * @inheritDoc
      */
-    public function render(\Symfony\Component\Console\Output\OutputInterface $output, $data)
+    public function render(\Symfony\Component\Console\Output\OutputInterface $output, $data): void
     {
         $this->renderTable('Server processes', $data, $output);
     }
