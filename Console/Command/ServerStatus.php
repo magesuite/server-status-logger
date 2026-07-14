@@ -49,7 +49,7 @@ class ServerStatus extends \Symfony\Component\Console\Command\Command
     protected function execute(
         \Symfony\Component\Console\Input\InputInterface $input,
         \Symfony\Component\Console\Output\OutputInterface $output
-    ) {
+    ): int {
         $logId = $input->getOption('log_id');
 
         if(empty($logId)) {
@@ -68,5 +68,7 @@ class ServerStatus extends \Symfony\Component\Console\Command\Command
 
         $renderLogData = $this->renderLogDataFactory->create();
         $renderLogData->execute($output, $logData);
+
+        return \Magento\Framework\Console\Cli::RETURN_SUCCESS;
     }
 }
